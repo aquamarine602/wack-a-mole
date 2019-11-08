@@ -13,17 +13,17 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity
-            android:name="com.example.wack_a_mole2.Game"
-            android:label="@string/app_name" >
-        </activity>
-        <activity android:name="Options">
+        
+        <activity android:name="com.example.wack_a_mole2.Game" android:label="@string/app_name">
+        </activity><activity android:name="Options">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="Gameover"></activity>
+        <activity android:name="Highscores"></activity>
     </application>
 
 </manifest>

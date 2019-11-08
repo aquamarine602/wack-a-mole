@@ -31,11 +31,19 @@ public class Game extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
 		
-		Bundle bun = getIntent().getExtras();
+		// data coming from prefs, not intent
+		/** Bundle bun = getIntent().getExtras();
 		playerName = bun.getString("name");
 		difficultyLevel = bun.getInt("difficulty");
 		numMoles = bun.getInt("num_moles");
-		duration = bun.getInt("duration");
+		duration = bun.getInt("duration"); **/
+		
+		SharedPreferences prefs = getSharedPreferences("WhackSettings", MODE_PRIVATE);
+		playerName = prefs.getString("name", playerName);
+		difficultyLevel = prefs.getInt("difficulty", difficultyLevel);
+		numMoles = prefs.getInt("moles", numMoles);
+		duration = prefs.getInt("duration", duration);
+		
 		TextView name = (TextView)findViewById(R.id.tvName);
 		name.setText(playerName);
 		
@@ -45,11 +53,21 @@ public class Game extends Activity implements OnClickListener {
 	}
 
 	public void onClick(View v) {
-	
+		if (isComplete = true) {
+			return;
+		}
+		if (v == currentMole) {
+			numWhacks++;
+			TextView tv = (TextView)findViewById(R.id.tvNumWhacks);
+			tv.setText("Number of Whacks: " + numWhacks);
+			setNewMole();
+		}
 	}
 
 	public void gameOver(){
-
+		isComplete = true;
+		TextView tv = (TextView)findViewById(R.id.tvNumWhacks);
+		tv.setText("Game OVer! Score: " + numWhacks);
 	}
 
 	public void setNewMole() {

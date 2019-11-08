@@ -2,6 +2,7 @@ package com.example.wack_a_mole2;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +23,7 @@ public class Options extends Activity implements OnClickListener {
 		setUpSpinner();
 		Button play = (Button)findViewById(R.id.pgButton);
 		play.setOnClickListener(this);
+		loadSettings();
 	}
 	
 	@Override
@@ -50,7 +52,8 @@ public class Options extends Activity implements OnClickListener {
 			int duration = durationsb.getProgress();
 			int num_moles = num_molessp.getSelectedItemPosition()+3;
 			
-			saveSettingsIntent(difficulty, name, num_moles, duration, intent);
+			//saveSettingsIntent(difficulty, name, num_moles, duration, intent);
+			saveSettingsInPrefs(difficulty, name, num_moles, duration);
 			startActivity(intent);
 		}
 	}
@@ -60,6 +63,41 @@ public class Options extends Activity implements OnClickListener {
 		intent.putExtra("difficulty", difficulty);
 		intent.putExtra("moles", num_moles);
 		intent.putExtra("duration", duration);
+	}
+	
+	private void saveSettingsInPrefs(int difficulty, String name, int numMoles, int duration) {
+		SharedPreferences prefs = getSharedPreferences("WhackSettings", MODE_PRIVATE);
+		SharedPreferences.Editor edit = prefs.edit();
+		edit.putString("name", name);
+		edit.putInt("difficulty", difficulty);
+		edit.putInt("moles", numMoles);
+		edit.putInt("duration", duration);
+		edit.commit();
+	}
+	
+	private void loadSettings() {
+		SharedPreferences prefs = getSharedPreferences("WhackSettings", MODE_PRIVATE);
+		String name = prefs.getString("name", "");		// key, default
+		int duration = prefs.getInt("duration", 20);
+		int difficulty = prefs.getInt("difficulty", 2);
+		int numMoles = prefs.getInt("moles", 8);
+		
+		EditText name_tx = (EditText)findViewById(R.id.etName);
+		name_tx.setText(name);
+		RadioButton easy = (RadioButton)findViewById(R.id.rbEasy);
+		RadioButton medium = (RadioButton)findViewById(R.id.rbMedium);
+		RadioButton hard = (RadioButton)findViewById(R.id.rbHard);
+		if (difficulty == 3) {
+			easy.setChecked(true);
+		} else if (difficulty == 2) {
+			medium.setChecked(true);
+		} else if (difficulty == 1) {
+			hard.setChecked(true);
+		}
+		SeekBar durationsb = (SeekBar)findViewById(R.id.sbDuration);
+		durationsb.setProgress(duration);
+		Spinner num_molessp = (Spinner)findViewById(R.id.spNumMoles);
+		num_molessp.setSelection(numMoles-3);
 	}
 
 }
