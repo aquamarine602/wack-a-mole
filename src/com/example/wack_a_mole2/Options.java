@@ -58,6 +58,7 @@ public class Options extends Activity implements OnClickListener {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void saveSettingsIntent(int difficulty, String name, int num_moles, int duration, Intent intent) {
 		intent.putExtra("name", name);
 		intent.putExtra("difficulty", difficulty);

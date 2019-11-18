@@ -2,6 +2,8 @@ package com.example.wack_a_mole2;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
+
 import java.io.*;
 import java.util.*;
 import android.widget.*;
@@ -14,20 +16,35 @@ public class Highscores extends Activity{
 		setContentView(R.layout.highscores);
 		
 		// load scores
-		loadHighScoresInternalFile();
-		//loadHighScoresSD();
+		String state = Environment.getExternalStorageState();
+		if (state.equals(Environment.MEDIA_MOUNTED)) {
+			loadHighScoresSD();
+		} else {
+			loadHighScoresInternalFile();
+		}
 	}
 
 	// load scores from internal file
 	private void loadHighScoresInternalFile() {
-		// TODO Auto-generated method stub
+		try {
+			FileInputStream fis = openFileInput("HighScores.txt");
+			readScoresFIS(fis);
+		} catch (Exception e) {
+			//e.printStackTrace();
+		}
 		
 	}
 	
 	// load scores from sd card
 	private void loadHighScoresSD() {
-		// TODO Auto-generated method stub
-		
+		try {
+			File privateSD = getExternalFilesDir(null);
+			File file = new File(privateSD, "HighScoresSD.txt");
+			FileInputStream fis = new FileInputStream(file);
+			readScoresFIS(fis);
+		} catch (FileNotFoundException e) {
+			//e.printStackTrace();
+		}
 	}
 	
 	// this method will load the scores from the fileinputstream
@@ -105,8 +122,8 @@ public class Highscores extends Activity{
 			String name = playerIter.next();
 			
 			// add score and name plus a newline to respective text fields
-			sortedScores += score.toString() + endline;
-			sortedNames += name + endline;
+			sortedScores += score.toString() + "\n";
+			sortedNames += name + "\n";
 			
 			// count scores and stop after top 5
 			numPresent++;

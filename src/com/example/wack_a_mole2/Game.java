@@ -32,19 +32,20 @@ public class Game extends Activity implements OnClickListener {
 		setContentView(R.layout.game);
 		
 		// data coming from prefs, not intent
-		/** Bundle bun = getIntent().getExtras();
-		playerName = bun.getString("name");
-		difficultyLevel = bun.getInt("difficulty");
-		numMoles = bun.getInt("num_moles");
-		duration = bun.getInt("duration"); **/
+		//Bundle bun = getIntent().getExtras();
+		//playerName = bun.getString("name");
+		//difficultyLevel = bun.getInt("difficulty");
+		//numMoles = bun.getInt("num_moles");
+		//duration = bun.getInt("duration"); 
 		
 		SharedPreferences prefs = getSharedPreferences("WhackSettings", MODE_PRIVATE);
-		playerName = prefs.getString("name", playerName);
+		playerName = prefs.getString("name", "default");
 		difficultyLevel = prefs.getInt("difficulty", difficultyLevel);
 		numMoles = prefs.getInt("moles", numMoles);
 		duration = prefs.getInt("duration", duration);
 		
-		TextView name = (TextView)findViewById(R.id.tvName);
+		// had a bad refrence to the wrong textview
+		TextView name = (TextView)findViewById(R.id.tvPlayerName);
 		name.setText(playerName);
 		
 		initButtons();
@@ -53,7 +54,7 @@ public class Game extends Activity implements OnClickListener {
 	}
 
 	public void onClick(View v) {
-		if (isComplete = true) {
+		if (isComplete) {
 			return;
 		}
 		if (v == currentMole) {
@@ -67,7 +68,12 @@ public class Game extends Activity implements OnClickListener {
 	public void gameOver(){
 		isComplete = true;
 		TextView tv = (TextView)findViewById(R.id.tvNumWhacks);
-		tv.setText("Game OVer! Score: " + numWhacks);
+		tv.setText("Game Over! Score: " + numWhacks);
+		Intent gameOverint = new Intent(this, Gameover.class);
+		gameOverint.putExtra("name", playerName);
+		gameOverint.putExtra("score", numWhacks);
+		startActivity(gameOverint);
+		finish();
 	}
 
 	public void setNewMole() {
@@ -88,12 +94,10 @@ public class Game extends Activity implements OnClickListener {
 
 		for(int i = 0; i < group.getChildCount(); i++) {
 			v = group.getChildAt(i);
-			if (v instanceof Button)
-			{
+			if (v instanceof Button){
 				v.setOnClickListener(this); 
 
-				if (!isComplete)	
-				{
+				if (!isComplete){
 					myButtonIDs.add(v.getId());	
 					v.setVisibility(View.INVISIBLE);
 				}
